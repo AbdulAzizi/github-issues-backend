@@ -5,10 +5,13 @@ module.exports = {
     tsconfigRootDir: __dirname,
     sourceType: 'module',
   },
-  plugins: ['@typescript-eslint/eslint-plugin'],
+  plugins: ['@typescript-eslint/eslint-plugin', "sonarjs", "jest", "prettier"],
   extends: [
+    'airbnb-base',
     'plugin:@typescript-eslint/recommended',
     'plugin:prettier/recommended',
+    'plugin:jest/recommended',
+    'plugin:sonarjs/recommended',
   ],
   root: true,
   env: {
