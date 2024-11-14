@@ -16,4 +16,18 @@ export class LogsService {
     });
     await newLog.save();
   }
+
+  async getLogs(page: number, limit: number) {
+    const skip = (page - 1) * limit;
+    const logs = await this.logModel.find().skip(skip).limit(limit).exec();
+    const totalLogs = await this.logModel.countDocuments();
+
+    return {
+      data: logs,
+      total: totalLogs,
+      page,
+      limit,
+      totalPages: Math.ceil(totalLogs / limit),
+    };
+  }
 }
