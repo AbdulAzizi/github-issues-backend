@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, NotFoundException } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { lastValueFrom } from 'rxjs';
@@ -13,9 +13,17 @@ export class GithubService {
     const apiBase = this.configService.get('GITHUB_API_URL');
     const apiUrl = `${apiBase}/repos/${owner}/${repo}/issues`;
 
-    const response = await lastValueFrom(
-      this.httpService.get(apiUrl, { params: { per_page: 30, page } }),
-    );
-    return response.data;
+    try {
+      const response = await lastValueFrom(
+        this.httpService.get(apiUrl, { params: { per_page: 30, page } }),
+      );
+      return response.data;
+    } catch (error) {
+      if (error.response?.status === 404) {
+        throw new NotFoundException('Resource not found');
+      }
+
+      throw new HttpException(error.message, error.response?.status || 500);
+    }
   }
 }
