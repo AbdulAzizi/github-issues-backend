@@ -12,6 +12,7 @@ export class LoggerMiddleware implements NestMiddleware {
     const routeMap: Record<string, string> = {
       '/github/issues': 'get_issues',
       '/github/issue': 'get_issue',
+      '/logs': 'get_logs',
     };
 
     const requestPath =
@@ -19,9 +20,15 @@ export class LoggerMiddleware implements NestMiddleware {
       req.originalUrl;
     const requestType = routeMap[requestPath] || requestPath;
 
-    const details = { url: req.url, headers: req.headers };
+    res.on('finish', async () => {
+      const statusCode = res.statusCode;
 
-    await this.logsService.logRequest(ip, requestType, details);
+      await this.logsService.logRequest(ip, requestType, {
+        url: req.originalUrl,
+        headers: { ...req.headers, 'status-code': statusCode },
+      });
+    });
+
     next();
   }
 }
