@@ -7,7 +7,7 @@ export class GetLogsDto {
   @IsInt({ message: 'The "limit" parameter must be an integer.' })
   @Min(10, { message: 'The "limit" parameter must be at least 10.' })
   @Max(250, { message: 'The "limit" parameter must be maximum 250.' })
-  limit?: number = 10;
+  limit?: number = 250;
 
   @IsOptional()
   @Type(() => Number)
