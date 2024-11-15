@@ -15,6 +15,11 @@ export class GithubController {
   @Get('issues')
   @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
   async getIssues(@Query() query: GetIssuesDto) {
-    return this.githubService.getIssues(query.owner, query.repo, query.page);
+    return this.githubService.getIssues(
+      query.owner,
+      query.repo,
+      query.page,
+      query.limit,
+    );
   }
 }
